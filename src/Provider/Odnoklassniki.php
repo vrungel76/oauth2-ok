@@ -6,17 +6,26 @@ namespace League\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
 
 class Odnoklassniki extends AbstractProvider
 {
+    use BearerAuthorizationTrait;
+
+    private $apiServer = 'https://api.ok.ru/';
+
+    /**
+     * @var string
+     */
+    protected $clientPublic;
 
     /**
      * @inheritDoc
      */
     public function getBaseAuthorizationUrl()
     {
-        // TODO: Implement getBaseAuthorizationUrl() method.
+        return 'https://connect.ok.ru/oauth/authorize';
     }
 
     /**
@@ -24,7 +33,7 @@ class Odnoklassniki extends AbstractProvider
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        // TODO: Implement getBaseAccessTokenUrl() method.
+        return $this->apiServer.'token.do';
     }
 
     /**
@@ -32,7 +41,14 @@ class Odnoklassniki extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        // TODO: Implement getResourceOwnerDetailsUrl() method.
+        $params = [
+            'method' => 'users.getCurrentUser',
+            'application_key' => $this->clientPublic,
+            'fields' => 'uid,name,first_name,last_name,location,gender,locale',
+        ];
+
+        $sign = md5(http_build_query($params, '','').md5($token.$this->clientSecret));
+        return $this->apiServer.'fb.do?'.http_build_query($params).'&access_token='.$token.'&sig='.$sign;
     }
 
     /**
@@ -40,7 +56,7 @@ class Odnoklassniki extends AbstractProvider
      */
     protected function getDefaultScopes()
     {
-        // TODO: Implement getDefaultScopes() method.
+        return [];
     }
 
     /**
@@ -48,7 +64,13 @@ class Odnoklassniki extends AbstractProvider
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        // TODO: Implement checkResponse() method.
+        if ((int)$response->getStatusCode() !== 200) {
+            throw new IdentityProviderException(
+                http_build_query($data, '', ''),
+                $response->getStatusCode(),
+                $data
+            );
+        }
     }
 
     /**
@@ -56,6 +78,6 @@ class Odnoklassniki extends AbstractProvider
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        // TODO: Implement createResourceOwner() method.
+        return new OdnoklassnikiUser($response);
     }
 }
