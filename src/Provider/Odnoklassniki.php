@@ -33,7 +33,7 @@ class Odnoklassniki extends AbstractProvider
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        return $this->apiServer.'token.do';
+        return $this->apiServer.'oauth/token.do';
     }
 
     /**
@@ -42,9 +42,9 @@ class Odnoklassniki extends AbstractProvider
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
         $params = [
-            'method' => 'users.getCurrentUser',
             'application_key' => $this->clientPublic,
             'fields' => 'uid,name,first_name,last_name,location,gender,locale',
+            'method' => 'users.getCurrentUser',
         ];
 
         $sign = md5(http_build_query($params, '','').md5($token.$this->clientSecret));
