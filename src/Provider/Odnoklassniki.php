@@ -48,7 +48,9 @@ class Odnoklassniki extends AbstractProvider
         ];
 
         $sign = md5(http_build_query($params, '','').md5($token.$this->clientSecret));
-        return $this->apiServer.'fb.do?'.http_build_query($params).'&access_token='.$token.'&sig='.$sign;
+        $string = $this->apiServer.'fb.do?'.http_build_query($params).'&access_token='.$token.'&sig='.$sign;
+        error_log($string);
+        return $string;
     }
 
     /**
@@ -64,7 +66,7 @@ class Odnoklassniki extends AbstractProvider
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        if ((int)$response->getStatusCode() !== 200) {
+        if (isset($data['error_code']) || isset($data['error'])) {
             throw new IdentityProviderException(
                 http_build_query($data, '', ''),
                 $response->getStatusCode(),
