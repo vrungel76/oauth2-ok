@@ -43,14 +43,11 @@ class Odnoklassniki extends AbstractProvider
     {
         $params = [
             'application_key' => $this->clientPublic,
-            'fields' => 'uid,name,first_name,last_name,location,gender,locale',
+            'format' => 'json',
             'method' => 'users.getCurrentUser',
         ];
-
         $sign = md5(http_build_query($params, '','').md5($token.$this->clientSecret));
-        $string = $this->apiServer.'fb.do?'.http_build_query($params).'&access_token='.$token.'&sig='.$sign;
-        error_log($string);
-        return $string;
+        return $this->apiServer.'fb.do?'.http_build_query($params).'&access_token='.$token.'&sig='.$sign;
     }
 
     /**
