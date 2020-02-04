@@ -26,33 +26,94 @@ class OdnoklassnikiUser implements ResourceOwnerInterface
         return $this->getField('uid');
     }
 
-    public function getName()
+    /**+
+     * @return string|null
+     */
+    public function getName(): ?string
     {
         return $this->getField('name');
     }
 
-    public function getFirstName()
+    /**
+     * @return string|null
+     */
+    public function getFirstName(): ?string
     {
         return $this->getField('first_name');
     }
 
-    public function getLastName()
+    /**
+     * @return string|null
+     */
+    public function getLastName(): ?string
     {
         return $this->getField('last_name');
     }
 
-    public function getCity()
+    /**
+     * @return string|null
+     */
+    public function getBirthday(): ?string
     {
-        $location = $this->getField('location');
-        return $location['city'];
+        return $this->getField('birthday');
     }
 
-    public function getGender()
+    /**
+     * @return string|null
+     */
+    public function getAge(): ?string
+    {
+        return $this->getField('age');
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCity(): ?string
+    {
+        $location = $this->getField('location');
+        return $location['city'] ?? null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCountry(): ?string
+    {
+        $location = $this->getField('location');
+        return $location['country'] ?? null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCountryCode(): ?string
+    {
+        $location = $this->getField('location');
+        return $location['countryCode'] ?? null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCountryName(): ?string
+    {
+        $location = $this->getField('location');
+        return $location['countryName'] ?? null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGender(): ?string
     {
         return $this->getField('gender');
     }
 
-    public function getLocale()
+    /**
+     * @return string|null
+     */
+    public function getLocale(): ?string
     {
         return $this->getField('locale');
     }
@@ -72,7 +133,7 @@ class OdnoklassnikiUser implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    private function getField($key)
+    private function getField($key): ?string
     {
         return $this->data[$key] ?? null;
     }
