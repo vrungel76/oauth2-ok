@@ -65,7 +65,7 @@ class Odnoklassniki extends AbstractProvider
     {
         if (isset($data['error_code']) || isset($data['error'])) {
             throw new IdentityProviderException(
-                http_build_query($data, '', ''),
+                json_encode($data),
                 $response->getStatusCode(),
                 $data
             );
